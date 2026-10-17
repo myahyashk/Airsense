@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-page: #0b1626;
+  --color-brand: #123a63;
+  --color-accent: #4f9eff;
+  --color-teal: #2ec4a6;
+  --color-card: #112338;
+  --color-border: #1d3b61;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background-color: #0b1626;
+  color: #f8fafc;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Custom subtle scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0b1626;
+}
+::-webkit-scrollbar-thumb {
+  background: #1d3b61;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4f9eff;
+}
+
+/* Accessible focus visible rings */
+:focus-visible {
+  outline: 2px solid #4f9eff;
+  outline-offset: 2px;
+}
+
+/* Skip link for screen readers and keyboard navigation */
+.skip-to-content {
+  position: absolute;
+  top: -9999px;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background-color: #4f9eff;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: top 0.2s ease;
+}
+
+.skip-to-content:focus {
+  top: 1rem;
+}

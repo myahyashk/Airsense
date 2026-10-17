@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+  <defs>
+    <linearGradient id="badgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#184e86" />
+      <stop offset="100%" stop-color="#0b1626" />
+    </linearGradient>
+    <linearGradient id="lineGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4f9eff" />
+      <stop offset="100%" stop-color="#ffffff" />
+    </linearGradient>
+    <linearGradient id="lineGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2ec4a6" />
+      <stop offset="100%" stop-color="#7bf5df" />
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#badgeGrad)" stroke="#234e7f" stroke-width="1.5" />
+  <path d="M 10 18 C 16 14, 22 22, 30 18 C 34 16, 36 17, 38 18" stroke="url(#lineGrad1)" stroke-width="2.5" stroke-linecap="round" fill="none" />
+  <path d="M 8 25 C 15 21, 21 29, 29 25 C 33 23, 35 24, 37 25" stroke="url(#lineGrad2)" stroke-width="2.5" stroke-linecap="round" fill="none" />
+  <path d="M 11 32 C 17 28, 23 36, 31 32 C 34 30, 36 31, 38 32" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" />
+  <circle cx="36" cy="12" r="2.5" fill="#2ec4a6" />
+</svg>
