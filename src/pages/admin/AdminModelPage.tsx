@@ -81,9 +81,9 @@ export const AdminModelPage: React.FC = () => {
     try {
       const res = await api.retrainModel();
       addToast({
-        type: "info",
-        title: "Retrain Job Queued",
-        message: `Job ID: ${res.job_id}. Training GradientBoostingRegressor in background.`,
+        type: "success",
+        title: "Sample Metrics Updated",
+        message: `Local forecast metrics refreshed (${res.job_id}).`,
       });
       pollStatus();
     } catch (err: any) {
@@ -98,10 +98,10 @@ export const AdminModelPage: React.FC = () => {
     <div className="space-y-6">
       <HeroCard
         title="Predictive Machine Learning Engine"
-        description="Explainable Gradient Boosting multi-horizon regressor for 1 to 6-hour particulate forecasting. Evaluated on non-shuffled chronological test sets against moving persistence."
+        description="Review illustrative forecast scores and sample feature details for the campus air quality forecast."
         keyValueLabel="CURRENT ALGORITHM"
         keyValue={modelInfo?.name || "GBR v1"}
-        statusChipText="Scikit-Learn Standard"
+        statusChipText="Sample Metrics"
         statusChipColor="teal"
         actions={
           <button
@@ -110,7 +110,7 @@ export const AdminModelPage: React.FC = () => {
             className="inline-flex items-center gap-2 px-4 py-2 bg-[#4f9eff] hover:bg-[#3b82f6] text-slate-950 font-bold rounded-xl text-xs transition-all shadow-glow disabled:opacity-50"
           >
             <Play className={`w-3.5 h-3.5 ${isRetraining ? "animate-spin" : ""}`} />
-            <span>{isRetraining ? "Retraining in Background..." : "Retrain Model Now"}</span>
+            <span>{isRetraining ? "Refreshing Metrics..." : "Refresh Sample Metrics"}</span>
           </button>
         }
       />

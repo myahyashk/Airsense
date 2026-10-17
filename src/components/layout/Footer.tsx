@@ -38,7 +38,7 @@ export const Footer: React.FC = () => {
             <span>Data Transparency Note</span>
           </div>
           <p className="text-[11px] text-slate-500 leading-snug">
-            Air quality data from Open-Meteo. AirSense is a student project and not an official air quality authority.
+            Sample air quality readings are shown here. AirSense is a student project and not an official air quality authority.
           </p>
         </div>
       </div>

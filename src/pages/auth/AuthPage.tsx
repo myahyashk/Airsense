@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Wind, Shield, CheckCircle, AlertCircle, ArrowRight, Lock, Mail, User as UserIcon } from "lucide-react";
+import { Wind, AlertCircle, ArrowRight, Lock, Mail, User as UserIcon } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../services/api";
 import type { CurrentReading } from "../../services/types";
@@ -13,7 +13,7 @@ export const AuthPage: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [liveReading, setLiveReading] = useState<CurrentReading | null>(null);
+  const [currentReading, setCurrentReading] = useState<CurrentReading | null>(null);
 
   const { login, register, user } = useAuth();
   const navigate = useNavigate();
@@ -29,12 +29,24 @@ export const AuthPage: React.FC = () => {
     }
   }, [user, navigate]);
 
-  // Fetch public live reading for preview badge
   useEffect(() => {
     api.getCurrent()
-      .then((data) => setLiveReading(data))
-      .catch(() => {});
+      .then((data) => setCurrentReading(data));
   }, []);
+
+  const handleQuickLogin = async (accountEmail: string) => {
+    setError(null);
+    setIsRegister(false);
+    setIsSubmitting(true);
+    try {
+      const loggedUser = await login(accountEmail, "");
+      navigate(loggedUser.role === "admin" ? "/admin" : "/app");
+    } catch (err: any) {
+      setError(err.message || "Unable to open this account.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +74,7 @@ export const AuthPage: React.FC = () => {
     }
   };
 
-  const aqiInfo = liveReading ? getAQIInfo(liveReading.aqi) : null;
+  const aqiInfo = currentReading ? getAQIInfo(currentReading.aqi) : null;
 
   return (
     <div className="min-h-screen bg-[#0b1626] flex flex-col md:flex-row text-white selection:bg-[#4f9eff] selection:text-slate-950">
@@ -103,21 +115,21 @@ export const AuthPage: React.FC = () => {
             Continuous particulate matter monitoring (PM2.5, PM10, dust) and explainable 6-hour predictive forecasting around the Benazir Bhutto Shaheed University of Technology and Skill Development campus in Khairpur Mirs, Sindh.
           </p>
 
-          {/* Live AQI Preview Badge */}
-          {liveReading && aqiInfo && (
+          {/* Campus AQI Preview Badge */}
+          {currentReading && aqiInfo && (
             <div className="p-4 bg-[#0b1626]/80 backdrop-blur-md border border-[#1d3b61] rounded-2xl flex items-center justify-between gap-4 shadow-soft">
               <div>
                 <div className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">
-                  Live Campus Air Quality
+                  Campus Air Quality
                 </div>
                 <div className="text-sm font-semibold text-white mt-0.5">
-                  {liveReading.location}
+                  {currentReading.location}
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <div className="text-right">
                   <div className="text-2xl font-black font-mono" style={{ color: aqiInfo.color }}>
-                    {liveReading.aqi}
+                    {currentReading.aqi}
                   </div>
                   <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color: aqiInfo.textColor }}>
                     {aqiInfo.category}
@@ -259,18 +271,29 @@ export const AuthPage: React.FC = () => {
             </button>
           </form>
 
-          {/* Seed demo quick hint */}
-          <div className="p-3 bg-[#112338]/60 border border-[#1d3b61]/80 rounded-xl text-[11px] text-slate-400 space-y-1">
-            <span className="font-semibold text-slate-300 block">Initial Accounts (after running seed):</span>
-            <div className="flex justify-between">
-              <span>Admin: <code className="text-[#4f9eff]">admin@airsense.edu.pk</code></span>
-              <span className="text-slate-500">Role: admin</span>
+          {!isRegister && (
+            <div className="space-y-2">
+              <p className="text-xs text-slate-400">Open a workspace without entering credentials:</p>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => handleQuickLogin("student@airsense.edu.pk")}
+                  className="px-3 py-2.5 bg-[#112338] border border-[#1d3b61] hover:border-[#2ec4a6] rounded-xl text-xs font-semibold text-white transition-colors disabled:opacity-50"
+                >
+                  Continue as User
+                </button>
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => handleQuickLogin("admin@airsense.edu.pk")}
+                  className="px-3 py-2.5 bg-[#112338] border border-[#1d3b61] hover:border-[#4f9eff] rounded-xl text-xs font-semibold text-white transition-colors disabled:opacity-50"
+                >
+                  Continue as Admin
+                </button>
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span>User: <code className="text-[#2ec4a6]">student@airsense.edu.pk</code></span>
-              <span className="text-slate-500">Role: user</span>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

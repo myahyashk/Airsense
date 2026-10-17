@@ -20,7 +20,7 @@ export const AppLayout: React.FC = () => {
   const previousAlertsRef = useRef<AlertItem[]>([]);
 
   const getPageTitle = (pathname: string): string => {
-    if (pathname === "/app") return "Live Campus Air Quality";
+    if (pathname === "/app") return "Campus Air Quality";
     if (pathname === "/app/forecast") return "6-Hour Forecast & Trajectory";
     if (pathname === "/app/history") return "Pollutant Trends & History";
     if (pathname === "/app/alerts") return "Campus Air Alerts & Advisories";
@@ -32,7 +32,7 @@ export const AppLayout: React.FC = () => {
     if (pathname === "/admin/users") return "User & Role Management";
     if (pathname === "/admin/alerts") return "Alert Dispatcher & History";
     if (pathname === "/admin/thresholds") return "Campus Threshold Configuration";
-    if (pathname === "/admin/data") return "Telemetry Ingestion & Data Export";
+    if (pathname === "/admin/data") return "Sample Data & Export";
     if (pathname === "/admin/model") return "Forecasting Model & Retraining";
     if (pathname === "/admin/audit") return "Security & System Audit Log";
 
@@ -112,6 +112,7 @@ export const AppLayout: React.FC = () => {
           onRefresh={fetchData}
           isRefreshing={isRefreshing}
           onOpenMobileMenu={() => setMobileOpen(true)}
+          dataSource="sample"
         />
 
         {/* Prominent Active Danger Alert Banner (if danger alert active) */}

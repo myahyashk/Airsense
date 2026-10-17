@@ -19,7 +19,7 @@ export const AdminDataPage: React.FC = () => {
   const { addToast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [lastFetchTime, setLastFetchTime] = useState<string>("");
-  const [sourceStatus, setSourceStatus] = useState<string>("live");
+  const [sourceStatus, setSourceStatus] = useState<string>("sample");
 
   // Export filters
   const [fromDate, setFromDate] = useState<string>("");
@@ -56,25 +56,36 @@ export const AdminDataPage: React.FC = () => {
     }
   };
 
-  const handleDownloadCsv = () => {
-    const url = api.exportReadingsUrl(fromDate || undefined, toDate || undefined);
-    window.open(url, "_blank");
-    addToast({
-      type: "info",
-      title: "Export Initiated",
-      message: "CSV download has started in your browser.",
-    });
+  const handleDownloadCsv = async () => {
+    try {
+      const blob = await api.exportReadings(fromDate || undefined, toDate || undefined);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "airsense_readings.csv";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      addToast({
+        type: "success",
+        title: "Export Downloaded",
+        message: "The campus sample readings CSV has been downloaded.",
+      });
+    } catch (err: any) {
+      addToast({ type: "danger", title: "Export Failed", message: err.message });
+    }
   };
 
   return (
     <div className="space-y-6">
       <HeroCard
-        title="Telemetry Data &amp; Source Pipeline"
-        description="Monitor upstream Open-Meteo atmospheric endpoints, trigger on-demand syncs, and export research-ready historical CSV datasets."
+        title="Campus Data &amp; Export"
+        description="Review the locally available campus readings, refresh the sample dataset, and export a date-filtered CSV."
         keyValueLabel="SOURCE INTEGRITY"
         keyValue={sourceStatus.toUpperCase()}
-        statusChipText={sourceStatus === "live" ? "Open-Meteo Live" : "Degraded Cache"}
-        statusChipColor={sourceStatus === "live" ? "teal" : "yellow"}
+        statusChipText={sourceStatus === "sample" ? "Sample Dataset" : sourceStatus === "live" ? "Open-Meteo Live" : "Degraded Cache"}
+        statusChipColor={sourceStatus === "sample" || sourceStatus === "live" ? "teal" : "yellow"}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -84,11 +95,11 @@ export const AdminDataPage: React.FC = () => {
             <div className="flex items-center justify-between border-b border-[#1d3b61] pb-3">
               <div className="flex items-center gap-2">
                 <Database className="w-5 h-5 text-[#4f9eff]" />
-                <h3 className="font-bold text-white text-base">Upstream Feed Telemetry</h3>
+                <h3 className="font-bold text-white text-base">Campus Sample Readings</h3>
               </div>
               <span className="text-xs text-[#2ec4a6] flex items-center gap-1 font-semibold">
                 <span className="w-2 h-2 rounded-full bg-[#2ec4a6] animate-ping" />
-                Active Polling
+                Locally Available
               </span>
             </div>
 
@@ -123,7 +134,7 @@ export const AdminDataPage: React.FC = () => {
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#123a63] hover:bg-[#183252] border border-[#244b7a] rounded-xl text-xs font-bold text-white transition-all shadow-sm disabled:opacity-50"
               >
                 <RefreshCw className={`w-4 h-4 text-[#4f9eff] ${isRefreshing ? "animate-spin" : ""}`} />
-                <span>{isRefreshing ? "Synchronizing Telemetry..." : "Force Ingestion Sync Now"}</span>
+                <span>{isRefreshing ? "Refreshing Readings..." : "Refresh Sample Readings"}</span>
               </button>
             </div>
           </Card>

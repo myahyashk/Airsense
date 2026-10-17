@@ -1,7 +1,7 @@
 export interface HealthResponse {
   status: string;
   time: string;
-  data_source: "live" | "degraded";
+  data_source: "live" | "degraded" | "sample";
 }
 
 export interface CurrentReading {
@@ -87,7 +87,7 @@ export interface GuidanceResponse {
 export interface AdminOverviewData {
   last_fetch: string;
   freshness_minutes: number;
-  source_status: "live" | "degraded";
+  source_status: "live" | "degraded" | "sample";
 }
 
 export interface AdminOverviewModel {

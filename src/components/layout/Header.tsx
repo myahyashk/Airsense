@@ -7,7 +7,7 @@ interface HeaderProps {
   onRefresh?: () => Promise<void> | void;
   isRefreshing?: boolean;
   onOpenMobileMenu: () => void;
-  dataSource?: "live" | "degraded";
+  dataSource?: "live" | "degraded" | "sample";
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -16,7 +16,7 @@ export const Header: React.FC<HeaderProps> = ({
   onRefresh,
   isRefreshing = false,
   onOpenMobileMenu,
-  dataSource = "live",
+  dataSource = "sample",
 }) => {
   const [currentTime, setCurrentTime] = useState<string>("");
   const [minutesAgo, setMinutesAgo] = useState<number>(0);
@@ -97,14 +97,22 @@ export const Header: React.FC<HeaderProps> = ({
               ? "bg-[#eab308]/10 text-[#facc15] border-[#eab308]/30"
               : "bg-[#2ec4a6]/10 text-[#2ec4a6] border-[#2ec4a6]/30"
           }`}
-          title={isStale ? "Data source is serving cached readings" : "Data source is live and receiving telemetry"}
+          title={
+            dataSource === "sample"
+              ? "Showing locally generated sample readings"
+              : isStale
+              ? "Data source is serving cached readings"
+              : "Data source is live and receiving telemetry"
+          }
         >
           <span
             className={`w-2 h-2 rounded-full ${
               isStale ? "bg-[#eab308]" : "bg-[#2ec4a6] animate-ping"
             }`}
           />
-          <span className="font-semibold">{isStale ? "Stale data" : "LIVE"}</span>
+          <span className="font-semibold">
+            {dataSource === "sample" ? "Sample data" : isStale ? "Stale data" : "LIVE"}
+          </span>
           <span className="text-slate-400">
             • {minutesAgo === 0 ? "Just now" : `${minutesAgo} min ago`}
           </span>

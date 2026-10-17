@@ -65,9 +65,15 @@ export const AdminOverviewPage: React.FC = () => {
         title="Administrative Command Center"
         description="University system overview: telemetry freshness, automated alert dispatching, forecasting metrics, and role-based access management."
         keyValueLabel="SOURCE STATUS"
-        keyValue={dataStatus?.source_status?.toUpperCase() || "LIVE"}
-        statusChipText={dataStatus?.source_status === "live" ? "System Optimal" : "Degraded Mode"}
-        statusChipColor={dataStatus?.source_status === "live" ? "teal" : "yellow"}
+        keyValue={dataStatus?.source_status?.toUpperCase() || "SAMPLE"}
+        statusChipText={
+          dataStatus?.source_status === "sample"
+            ? "Sample Dataset"
+            : dataStatus?.source_status === "live"
+            ? "System Optimal"
+            : "Degraded Mode"
+        }
+        statusChipColor={dataStatus?.source_status === "sample" || dataStatus?.source_status === "live" ? "teal" : "yellow"}
         actions={
           <button
             onClick={fetchOverview}
@@ -95,7 +101,7 @@ export const AdminOverviewPage: React.FC = () => {
             </div>
             <span className="text-xs text-[#2ec4a6] flex items-center gap-1 mt-1 font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-[#2ec4a6] animate-pulse" />
-              Source: Open-Meteo
+              Source: Sample Dataset
             </span>
           </div>
           <div className="text-[11px] text-slate-400 border-t border-[#1d3b61]/60 pt-2">
@@ -181,7 +187,7 @@ export const AdminOverviewPage: React.FC = () => {
           </div>
 
           <p className="text-xs text-slate-300 leading-relaxed">
-            The explainable Gradient Boosting Regressor utilizes rolling particulate means, cyclical diurnal features (sin/cos of hour), and Open-Meteo wind and humidity telemetry. It evaluated against a persistence baseline on an 80/20 chronological split.
+            These illustrative forecast metrics compare a sample model score with a persistence baseline. Values are included to populate the model overview and do not represent a live training run.
           </p>
 
           <div className="grid grid-cols-2 gap-4 pt-2">
@@ -206,42 +212,42 @@ export const AdminOverviewPage: React.FC = () => {
           <div className="flex items-center justify-between border-b border-[#1d3b61]/80 pb-3">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-[#2ec4a6]" />
-              <h3 className="font-bold text-white text-base">System Subsystem Health</h3>
+              <h3 className="font-bold text-white text-base">Application Features</h3>
             </div>
-            <span className="text-xs font-mono text-slate-400">All Subsystems Operational</span>
+            <span className="text-xs font-mono text-slate-400">Local Data Available</span>
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 rounded-xl bg-[#0b1626] border border-[#1d3b61] text-xs">
               <div className="flex items-center gap-2.5">
                 <CheckCircle className="w-4 h-4 text-[#2ec4a6]" />
-                <span className="font-semibold text-white">Ingestion Pipeline</span>
+                <span className="font-semibold text-white">Campus Readings</span>
               </div>
-              <span className="text-slate-400 font-mono">Open-Meteo REST (Khairpur Mirs)</span>
+              <span className="text-slate-400 font-mono">Local sample dataset</span>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-xl bg-[#0b1626] border border-[#1d3b61] text-xs">
               <div className="flex items-center gap-2.5">
                 <CheckCircle className="w-4 h-4 text-[#2ec4a6]" />
-                <span className="font-semibold text-white">Periodic Scheduler</span>
+                <span className="font-semibold text-white">Forecast View</span>
               </div>
-              <span className="text-slate-400 font-mono">APScheduler (30 min interval)</span>
+              <span className="text-slate-400 font-mono">Generated sample values</span>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-xl bg-[#0b1626] border border-[#1d3b61] text-xs">
               <div className="flex items-center gap-2.5">
                 <CheckCircle className="w-4 h-4 text-[#2ec4a6]" />
-                <span className="font-semibold text-white">SQLite Database Storage</span>
+                <span className="font-semibold text-white">User &amp; Admin Workspaces</span>
               </div>
-              <span className="text-slate-400 font-mono">SQLAlchemy ORM (WAL mode)</span>
+              <span className="text-slate-400 font-mono">Local account sessions</span>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-xl bg-[#0b1626] border border-[#1d3b61] text-xs">
               <div className="flex items-center gap-2.5">
                 <CheckCircle className="w-4 h-4 text-[#2ec4a6]" />
-                <span className="font-semibold text-white">Security &amp; RBAC</span>
+                <span className="font-semibold text-white">Alerts &amp; Preferences</span>
               </div>
-              <span className="text-slate-400 font-mono">Bcrypt + JWT HS256 + Rate Limiter</span>
+              <span className="text-slate-400 font-mono">Interactive sample records</span>
             </div>
           </div>
         </Card>
