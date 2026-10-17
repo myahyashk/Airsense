@@ -25,7 +25,7 @@ import { HeroCard } from "../../components/layout/HeroCard";
 import { Card } from "../../components/ui/Card";
 import { ChartSkeleton } from "../../components/ui/Skeleton";
 import { api } from "../../services/api";
-import { HistoryPoint, ForecastPoint } from "../../services/types";
+import type { HistoryPoint, ForecastPoint } from "../../services/types";
 import { getAQIInfo, AQI_CATEGORIES } from "../../constants/aqi";
 
 export const ForecastPage: React.FC = () => {

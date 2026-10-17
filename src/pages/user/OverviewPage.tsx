@@ -18,7 +18,7 @@ import { Card } from "../../components/ui/Card";
 import { AQIGauge } from "../../components/ui/AQIGauge";
 import { CardSkeleton } from "../../components/ui/Skeleton";
 import { api } from "../../services/api";
-import { CurrentReading, ForecastPoint } from "../../services/types";
+import type { CurrentReading, ForecastPoint } from "../../services/types";
 import { getAQIInfo } from "../../constants/aqi";
 
 export const OverviewPage: React.FC = () => {
@@ -46,7 +46,7 @@ export const OverviewPage: React.FC = () => {
   }, []);
 
   const reading = context?.currentReading;
-  const aqiInfo = reading ? getAQIInfo(reading.aqi) : getAQIInfo(50);
+  const aqiInfo = reading ? getAQIInfo(reading.aqi) : getAQIInfo(0);
 
   // Identify next expected unhealthy period from forecast
   const nextUnhealthy = forecastPoints.find((f) => f.aqi_pred >= 101);
@@ -71,7 +71,7 @@ export const OverviewPage: React.FC = () => {
         title="BBSUTSD Campus Air Quality"
         description="Live telemetry from the Khairpur Mirs monitoring station. Continuous real-time assessment of respirable dust, PM2.5, and ambient air safety."
         keyValueLabel="CURRENT AQI"
-        keyValue={reading?.aqi ?? 85}
+        keyValue={reading?.aqi ?? 0}
         statusChipText={aqiInfo.category}
         statusChipColor={
           aqiInfo.severity === "danger" ? "red" : aqiInfo.severity === "warning" ? "orange" : "teal"
@@ -101,7 +101,7 @@ export const OverviewPage: React.FC = () => {
           </div>
 
           <div className="py-6 flex items-center justify-center">
-            <AQIGauge aqi={reading?.aqi ?? 85} size={240} />
+            <AQIGauge aqi={reading?.aqi ?? 0} size={240} />
           </div>
 
           {/* Quick Guidance Alert Box */}
@@ -140,7 +140,7 @@ export const OverviewPage: React.FC = () => {
               </div>
               <div className="my-3">
                 <span className="text-3xl font-extrabold text-white font-mono">
-                  {reading?.pm25 ?? 28.5}
+                  {reading?.pm25 ?? 0}
                 </span>
                 <span className="text-xs text-slate-400 ml-1">µg/m³</span>
               </div>
@@ -167,7 +167,7 @@ export const OverviewPage: React.FC = () => {
               </div>
               <div className="my-3">
                 <span className="text-3xl font-extrabold text-white font-mono">
-                  {reading?.pm10 ?? 72.0}
+                  {reading?.pm10 ?? 0}
                 </span>
                 <span className="text-xs text-slate-400 ml-1">µg/m³</span>
               </div>
@@ -194,7 +194,7 @@ export const OverviewPage: React.FC = () => {
               </div>
               <div className="my-3">
                 <span className="text-3xl font-extrabold text-white font-mono">
-                  {reading?.dust ?? 54.0}
+                  {reading?.dust ?? 0}
                 </span>
                 <span className="text-xs text-slate-400 ml-1">µg/m³</span>
               </div>

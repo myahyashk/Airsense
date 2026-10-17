@@ -15,8 +15,9 @@ import { HeroCard } from "../../components/layout/HeroCard";
 import { Card } from "../../components/ui/Card";
 import { CardSkeleton } from "../../components/ui/Skeleton";
 import { api } from "../../services/api";
-import { AlertItem } from "../../services/types";
+import type { AlertItem } from "../../services/types";
 import { useToast } from "../../context/ToastContext";
+import { dedupeAlerts } from "../../utils/alerts";
 
 export const AlertsPage: React.FC = () => {
   const context = useOutletContext<{
@@ -24,7 +25,7 @@ export const AlertsPage: React.FC = () => {
     refreshData: () => Promise<void>;
   }>();
 
-  const [alerts, setAlerts] = useState<AlertItem[]>(context?.alerts || []);
+  const [alerts, setAlerts] = useState<AlertItem[]>(dedupeAlerts(context?.alerts || []));
   const [filter, setFilter] = useState<"all" | "active" | "unread">("all");
   const [loading, setLoading] = useState<boolean>(!context?.alerts);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>(
@@ -37,7 +38,7 @@ export const AlertsPage: React.FC = () => {
     setLoading(true);
     try {
       const res = await api.getAlerts(50);
-      setAlerts(res.items);
+      setAlerts(dedupeAlerts(res.items));
     } catch {
       // Degraded handled
     } finally {

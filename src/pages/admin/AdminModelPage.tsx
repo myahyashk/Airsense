@@ -13,7 +13,7 @@ import {
 import { HeroCard } from "../../components/layout/HeroCard";
 import { Card } from "../../components/ui/Card";
 import { api } from "../../services/api";
-import { AdminOverviewResponse, ModelStatusResponse } from "../../services/types";
+import type { AdminOverviewResponse, ModelStatusResponse } from "../../services/types";
 import { useToast } from "../../context/ToastContext";
 
 export const AdminModelPage: React.FC = () => {

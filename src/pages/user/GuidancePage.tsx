@@ -16,7 +16,7 @@ import {
 import { HeroCard } from "../../components/layout/HeroCard";
 import { Card } from "../../components/ui/Card";
 import { api } from "../../services/api";
-import { GuidanceItem } from "../../services/types";
+import type { GuidanceItem } from "../../services/types";
 import { AQI_CATEGORIES, getAQIInfo } from "../../constants/aqi";
 
 export const GuidancePage: React.FC = () => {

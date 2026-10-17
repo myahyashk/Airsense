@@ -17,7 +17,7 @@ import { HeroCard } from "../../components/layout/HeroCard";
 import { Card } from "../../components/ui/Card";
 import { Modal } from "../../components/ui/Modal";
 import { api } from "../../services/api";
-import { AdminUser } from "../../services/types";
+import type { AdminUser } from "../../services/types";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
 

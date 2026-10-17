@@ -16,7 +16,7 @@ import { HeroCard } from "../../components/layout/HeroCard";
 import { Card } from "../../components/ui/Card";
 import { CardSkeleton } from "../../components/ui/Skeleton";
 import { api } from "../../services/api";
-import { AdminOverviewResponse } from "../../services/types";
+import type { AdminOverviewResponse } from "../../services/types";
 
 export const AdminOverviewPage: React.FC = () => {
   const [overview, setOverview] = useState<AdminOverviewResponse | null>(null);

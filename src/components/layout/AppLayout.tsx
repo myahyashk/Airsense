@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { api } from "../../services/api";
-import { CurrentReading, AlertItem } from "../../services/types";
+import type { CurrentReading, AlertItem } from "../../services/types";
 import { useToast } from "../../context/ToastContext";
+import { dedupeAlerts, shouldNotifyForAlert } from "../../utils/alerts";
 import { AlertCircle, Bell } from "lucide-react";
 
 export const AppLayout: React.FC = () => {
@@ -16,6 +17,7 @@ export const AppLayout: React.FC = () => {
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
   const location = useLocation();
   const { addToast } = useToast();
+  const previousAlertsRef = useRef<AlertItem[]>([]);
 
   const getPageTitle = (pathname: string): string => {
     if (pathname === "/app") return "Live Campus Air Quality";
@@ -49,7 +51,20 @@ export const AppLayout: React.FC = () => {
         setCurrentReading(readingRes.value);
       }
       if (alertsRes.status === "fulfilled") {
-        setAlerts(alertsRes.value.items);
+        const nextAlerts = dedupeAlerts(alertsRes.value.items);
+        setAlerts(nextAlerts);
+
+        if (shouldNotifyForAlert(previousAlertsRef.current, nextAlerts)) {
+          const newestAlert = nextAlerts.find((alert) => !alert.read && alert.active) ?? nextAlerts[0];
+          if (typeof Notification !== "undefined" && Notification.permission === "granted" && newestAlert) {
+            new Notification("AirSense Alert", {
+              body: newestAlert.title || newestAlert.message || "New campus air quality update available.",
+              icon: "/favicon.svg",
+            });
+          }
+        }
+
+        previousAlertsRef.current = nextAlerts;
       }
     } catch {
       // Degraded or network error handled gracefully

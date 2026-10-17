@@ -14,7 +14,7 @@ import { HeroCard } from "../../components/layout/HeroCard";
 import { Card } from "../../components/ui/Card";
 import { Modal } from "../../components/ui/Modal";
 import { api } from "../../services/api";
-import { AlertItem } from "../../services/types";
+import type { AlertItem } from "../../services/types";
 import { useToast } from "../../context/ToastContext";
 
 export const AdminAlertsPage: React.FC = () => {

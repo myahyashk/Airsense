@@ -3,7 +3,7 @@ import { FileText, Filter, Search, ShieldCheck, Clock, RefreshCw } from "lucide-
 import { HeroCard } from "../../components/layout/HeroCard";
 import { Card } from "../../components/ui/Card";
 import { api } from "../../services/api";
-import { AuditItem } from "../../services/types";
+import type { AuditItem } from "../../services/types";
 import { useToast } from "../../context/ToastContext";
 
 export const AdminAuditPage: React.FC = () => {

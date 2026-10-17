@@ -14,7 +14,7 @@ import { HeroCard } from "../../components/layout/HeroCard";
 import { Card } from "../../components/ui/Card";
 import { ChartSkeleton } from "../../components/ui/Skeleton";
 import { api } from "../../services/api";
-import { HistoryPoint } from "../../services/types";
+import type { HistoryPoint } from "../../services/types";
 import { getAQIInfo } from "../../constants/aqi";
 
 export const HistoryPage: React.FC = () => {

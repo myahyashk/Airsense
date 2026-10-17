@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Wind, Shield, CheckCircle, AlertCircle, ArrowRight, Lock, Mail, User as UserIcon } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../services/api";
-import { CurrentReading } from "../../services/types";
+import type { CurrentReading } from "../../services/types";
 import { getAQIInfo } from "../../constants/aqi";
 
 export const AuthPage: React.FC = () => {

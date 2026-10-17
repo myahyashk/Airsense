@@ -20,11 +20,13 @@ import type {
 export class ApiError extends Error {
   status: number;
   data?: any;
-  constructor(message: string, status: number = 0, data?: any) {
+  kind: "network" | "http" | "shape";
+  constructor(message: string, status: number = 0, data?: any, kind: "network" | "http" | "shape" = "http") {
     super(message);
     this.name = "ApiError";
     this.status = status;
     this.data = data;
+    this.kind = kind;
   }
 }
 
@@ -50,8 +52,14 @@ export const getAuthToken = (): string | null => {
 };
 
 // Typed request wrapper with 10s timeout, auto-retry once on network error, and token attachment
-async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const url = endpoint.startsWith("http") ? endpoint : `/api${endpoint.startsWith("/") ? "" : "/"}${endpoint}`;
+async function apiRequest<T>(
+  endpoint: string,
+  options: RequestInit = {},
+  parseBody?: (response: Response) => Promise<T>,
+): Promise<T> {
+  const configuredBase = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "");
+  const apiBase = import.meta.env.DEV || !configuredBase ? "/api" : `${configuredBase}/api`;
+  const url = endpoint.startsWith("http") ? endpoint : `${apiBase}${endpoint.startsWith("/") ? "" : "/"}${endpoint}`;
   const token = getAuthToken();
 
   const headers: Record<string, string> = {
@@ -87,9 +95,9 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
       response = await fetchWithTimeout();
     } catch (retryErr: any) {
       if (retryErr.name === "AbortError") {
-        throw new ApiError("Connection timed out. Please check your network and retry.", 408);
+        throw new ApiError("Connection timed out. Please check your network and retry.", 408, undefined, "network");
       }
-      throw new ApiError("Network connection error. Server might be unavailable.", 0);
+      throw new ApiError("Network connection error. Server might be unavailable.", 0, undefined, "network");
     }
   }
 
@@ -115,14 +123,31 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
     } catch {
       // Non-JSON response
     }
-    throw new ApiError(errorMessage, response.status, errorData);
+    throw new ApiError(errorMessage, response.status, errorData, "http");
   }
 
   if (response.status === 204) {
     return {} as T;
   }
 
-  return response.json();
+  if (parseBody) {
+    return parseBody(response);
+  }
+
+  const parseResponse = async (): Promise<T> => {
+    try {
+      const data: unknown = await response.json();
+      if (data === null || typeof data !== "object") {
+        throw new ApiError("The server returned data in an unexpected format.", response.status, data, "shape");
+      }
+      return data as T;
+    } catch (err) {
+      if (err instanceof ApiError) throw err;
+      throw new ApiError("The server returned invalid JSON.", response.status, undefined, "shape");
+    }
+  };
+
+  return parseResponse();
 }
 
 export const api = {
@@ -175,11 +200,12 @@ export const api = {
       action ? `/admin/audit?limit=${limit}&action=${encodeURIComponent(action)}` : `/admin/audit?limit=${limit}`
     ),
   exportReadingsUrl: (from?: string, to?: string) => {
-    let url = "/api/admin/export/readings";
     const params = new URLSearchParams();
     if (from) params.append("from", from);
     if (to) params.append("to", to);
     const qs = params.toString();
-    return qs ? `${url}?${qs}` : url;
+    return `/admin/export/readings${qs ? `?${qs}` : ""}`;
   },
+  exportReadings: (from?: string, to?: string) =>
+    apiRequest<Blob>(api.exportReadingsUrl(from, to), { headers: { Accept: "text/csv" } }, (response) => response.blob()),
 };
